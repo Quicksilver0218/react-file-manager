@@ -1,0 +1,34 @@
+@import "../../../styles/variables";
+
+.file-paste-confirm {
+    .file-paste-confirm-text {
+        border-bottom: 1px solid #dddddd;
+        padding: 15px;
+        margin-top: 0;
+        margin-bottom: .7rem;
+        word-wrap: break-word;
+        font-weight: 500;
+        font-size: $fm-font-size;
+
+        .file-paste-conflict-text {
+            margin-top: .7rem;
+
+            .file-paste-conflict-list {
+                max-height: 7.5em;
+                overflow-y: auto;
+                border: 1px solid #dddddd;
+                border-radius: 5px;
+                padding: 0 5px;
+                margin-top: 5px;
+            }
+        }
+    }
+
+    .file-paste-confirm-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-bottom: .7rem;
+        margin-right: 1rem;
+    }
+}

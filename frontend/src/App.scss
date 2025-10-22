@@ -1,5 +1,31 @@
-body {
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
   margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: "Nunito Sans, sans-serif";
 }
 
 .app {
@@ -7,7 +33,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #32363a;
 
   .file-manager-container {
     height: 70%;

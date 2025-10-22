@@ -6,12 +6,14 @@ import PreviewFileAction from "./PreviewFile/PreviewFile.action";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useShortcutHandler } from "../../hooks/useShortcutHandler";
 import { useTranslation } from "../../contexts/TranslationProvider";
+import PasteAction from "./Paste/Paste.action";
 
 const Actions = ({
   fileUploadConfig,
   onFileUploading,
   onFileUploaded,
   onDelete,
+  onPaste,
   onRefresh,
   maxFileSize,
   filePreviewPath,
@@ -19,6 +21,8 @@ const Actions = ({
   acceptedFileTypes,
   triggerAction,
   permissions,
+  pasteState,
+  conflictingFiles,
 }) => {
   const [activeAction, setActiveAction] = useState(null);
   const { selectedFiles } = useSelection();
@@ -39,12 +43,11 @@ const Actions = ({
           onFileUploaded={onFileUploaded}
         />
       ),
-      width: "35%",
+      width: 720,
     },
     delete: {
       title: t("delete"),
       component: <DeleteAction triggerAction={triggerAction} onDelete={onDelete} />,
-      width: "25%",
     },
     previewFile: {
       title: t("preview"),
@@ -54,7 +57,12 @@ const Actions = ({
           filePreviewComponent={filePreviewComponent}
         />
       ),
-      width: "50%",
+      width: 1280,
+      height: 720,
+    },
+    paste: {
+      title: pasteState?.operationType === "copy" ? t("copyFiles") : t("moveFiles"),
+      component: <PasteAction triggerAction={triggerAction} pasteState={pasteState} conflictingFiles={conflictingFiles} onPaste={onPaste} />,
     },
   };
 
@@ -70,6 +78,11 @@ const Actions = ({
     }
   }, [triggerAction.isActive]);
 
+  useEffect(() => {
+    if (conflictingFiles.length > 0)
+      triggerAction.show("paste");
+  }, [conflictingFiles]);
+
   if (activeAction) {
     return (
       <Modal
@@ -77,6 +90,7 @@ const Actions = ({
         show={triggerAction.isActive}
         setShow={triggerAction.close}
         dialogWidth={activeAction.width}
+        dialogHeight={activeAction.height}
       >
         {activeAction?.component}
       </Modal>

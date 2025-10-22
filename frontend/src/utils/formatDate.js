@@ -11,5 +11,5 @@ export const formatDate = (date) => {
   const day = date.getDate();
   const year = date.getFullYear();
 
-  return `${month}/${day}/${year} ${hours}:${minutes < 10 ? "0" + minutes : minutes} ${ampm}`;
+  return `${day}/${month}/${year} ${hours}:${minutes < 10 ? "0" + minutes : minutes} ${ampm}`;
 };

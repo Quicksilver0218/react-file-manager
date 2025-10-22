@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../components/Button/Button";
 import { useSelection } from "../../../contexts/SelectionContext";
 import { useTranslation } from "../../../contexts/TranslationProvider";

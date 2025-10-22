@@ -98,8 +98,9 @@ const PreviewFileAction = ({ filePreviewPath, filePreviewComponent }) => {
             src={filePath}
             onLoad={handleImageLoad}
             onError={handleImageError}
-            frameBorder="0"
             className={`photo-popup-iframe ${isLoading ? "img-loading" : ""}`}
+            height="100%"
+            style={{ border: "none" }}
           ></iframe>
         </>
       )}

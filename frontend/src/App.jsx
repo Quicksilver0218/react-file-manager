@@ -92,12 +92,18 @@ function App() {
   const handlePaste = async (copiedItems, destinationFolder, operationType) => {
     setIsLoading(true);
     const copiedItemIds = copiedItems.map((item) => item._id);
+    let response;
     if (operationType === "copy") {
-      const response = await copyItemAPI(copiedItemIds, destinationFolder?._id);
+      response = await copyItemAPI(copiedItemIds, destinationFolder?._id);
     } else {
-      const response = await moveItemAPI(copiedItemIds, destinationFolder?._id);
+      response = await moveItemAPI(copiedItemIds, destinationFolder?._id);
     }
-    await getFiles();
+    if (response.status === 200) {
+      getFiles();
+    } else {
+      console.error(response);
+      setIsLoading(false);
+    }
   };
   //
 

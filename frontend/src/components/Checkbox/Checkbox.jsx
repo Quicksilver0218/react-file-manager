@@ -12,6 +12,7 @@ const Checkbox = ({ name, id, checked, onClick, onChange, className = "", title,
       onChange={onChange}
       title={title}
       disabled={disabled}
+      style={{ width: "1.5em", height: "1.5em" }}
     />
   );
 };

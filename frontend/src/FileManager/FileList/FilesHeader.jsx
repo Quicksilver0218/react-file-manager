@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { useFileNavigation } from "../../contexts/FileNavigationContext";
 import { useSelection } from "../../contexts/SelectionContext";
@@ -6,8 +6,6 @@ import { useTranslation } from "../../contexts/TranslationProvider";
 
 const FilesHeader = ({ unselectFiles, onSort, sortConfig }) => {
   const t = useTranslation();
-
-  const [showSelectAll, setShowSelectAll] = useState(false);
 
   const { selectedFiles, setSelectedFiles } = useSelection();
   const { currentPathFiles } = useFileNavigation();
@@ -17,12 +15,10 @@ const FilesHeader = ({ unselectFiles, onSort, sortConfig }) => {
   }, [selectedFiles, currentPathFiles]);
 
   const handleSelectAll = (e) => {
-    if (e.target.checked) {
+    if (e.target.checked)
       setSelectedFiles(currentPathFiles);
-      setShowSelectAll(true);
-    } else {
+    else
       unselectFiles();
-    }
   };
 
   const handleSort = (key) => {
@@ -32,24 +28,18 @@ const FilesHeader = ({ unselectFiles, onSort, sortConfig }) => {
   };
 
   return (
-    <div
-      className="files-header"
-      onMouseOver={() => setShowSelectAll(true)}
-      onMouseLeave={() => setShowSelectAll(false)}
-    >
+    <div className="files-header">
       <div className="file-select-all">
-        {(showSelectAll || allFilesSelected) && (
-          <Checkbox
-            id="selectAll"
-            checked={allFilesSelected}
-            onChange={handleSelectAll}
-            title="Select all"
-            disabled={currentPathFiles.length === 0}
-          />
-        )}
+        <Checkbox
+          id="selectAll"
+          checked={allFilesSelected}
+          onChange={handleSelectAll}
+          title={t("selectAll")}
+          disabled={currentPathFiles.length === 0}
+        />
       </div>
       <div
-        className={`file-name ${sortConfig?.key === "name" ? "active" : ""}`}
+        className={`column file-name ${sortConfig?.key === "name" ? "active" : ""}`}
         onClick={() => handleSort("name")}
       >
         {t("name")}
@@ -58,7 +48,7 @@ const FilesHeader = ({ unselectFiles, onSort, sortConfig }) => {
         )}
       </div>
       <div
-        className={`file-date ${sortConfig?.key === "modified" ? "active" : ""}`}
+        className={`column file-date ${sortConfig?.key === "modified" ? "active" : ""}`}
         onClick={() => handleSort("modified")}
       >
         {t("modified")}
@@ -67,7 +57,7 @@ const FilesHeader = ({ unselectFiles, onSort, sortConfig }) => {
         )}
       </div>
       <div
-        className={`file-size ${sortConfig?.key === "size" ? "active" : ""}`}
+        className={`column file-size ${sortConfig?.key === "size" ? "active" : ""}`}
         onClick={() => handleSort("size")}
       >
         {t("size")}

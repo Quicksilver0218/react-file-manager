@@ -102,6 +102,7 @@ const UploadItem = ({
       const method = fileUploadConfig?.method || "POST";
       xhr.open(method, fileUploadConfig?.url, true);
       const headers = fileUploadConfig?.headers;
+      const inputName = fileUploadConfig?.inputName || "file";
       for (let key in headers) {
         xhr.setRequestHeader(key, headers[key]);
       }
@@ -111,7 +112,7 @@ const UploadItem = ({
       for (let key in appendData) {
         appendData[key] && formData.append(key, appendData[key]);
       }
-      formData.append("file", fileData.file);
+      formData.append(inputName, fileData.file);
 
       xhr.send(formData);
     });
@@ -177,14 +178,14 @@ const UploadItem = ({
           {isUploaded ? (
             <FaRegCheckCircle title={t("uploaded")} className="upload-success" />
           ) : isCanceled || uploadFailed ? (
-            <IoMdRefresh className="retry-upload" title="Retry" onClick={handleRetry} />
+            <IoMdRefresh size="1.5em" className="retry-upload" title="Retry" onClick={handleRetry} />
           ) : (
             <div
               className="rm-file"
               title={`${!!fileData.error ? t("Remove") : t("abortUpload")}`}
               onClick={!!fileData.error ? () => handleFileRemove(index) : handleAbortUpload}
             >
-              <AiOutlineClose />
+              <AiOutlineClose size="1.5em" />
             </div>
           )}
         </div>

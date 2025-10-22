@@ -15,7 +15,7 @@ export const FileNavigationProvider = ({ children, initialPath, onFolderChange }
   useEffect(() => {
     if (Array.isArray(files) && files.length > 0) {
       setCurrentPathFiles(() => {
-        const currPathFiles = files.filter((file) => file.path === `${currentPath}/${file.name}`);
+        const currPathFiles = files.filter((file) => file.path === `${currentPath ? currentPath + "/" : ""}${file.name}`);
         return sortFiles(currPathFiles, sortConfig.key, sortConfig.direction);
       });
 

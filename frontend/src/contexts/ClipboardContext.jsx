@@ -1,11 +1,12 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 import { useSelection } from "./SelectionContext";
 import { validateApiCallback } from "../utils/validateApiCallback";
+import useSessionStorage from "../hooks/useSessionStorage";
 
 const ClipBoardContext = createContext();
 
-export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy }) => {
-  const [clipBoard, setClipBoard] = useState(null);
+export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, setPasteState, setConflictingFiles }) => {
+  const [clipBoard, setClipBoard] = useSessionStorage("clipBoard", null);
   const { selectedFiles, setSelectedFiles } = useSelection();
 
   const handleCutCopy = (isMoving) => {
@@ -28,7 +29,12 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy }) => {
     const copiedFiles = clipBoard.files;
     const operationType = clipBoard.isMoving ? "move" : "copy";
 
-    validateApiCallback(onPaste, "onPaste", copiedFiles, destinationFolder, operationType);
+    validateApiCallback(onPaste, "onPaste", copiedFiles, destinationFolder, operationType).then(conflicts => {
+      if (conflicts && conflicts.length) {
+        setConflictingFiles(conflicts);
+        setPasteState({ copiedFiles, destinationFolder, operationType });
+      }
+    });
 
     clipBoard.isMoving && setClipBoard(null);
     setSelectedFiles([]);

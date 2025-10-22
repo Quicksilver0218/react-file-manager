@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { BsCopy, BsFolderPlus, BsGridFill, BsScissors } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { BsCopy, BsFolderPlus, BsGridFill, BsSearch, BsScissors } from "react-icons/bs";
 import { FiRefreshCw } from "react-icons/fi";
 import {
   MdClear,
@@ -17,14 +17,19 @@ import { useLayout } from "../../contexts/LayoutContext";
 import { validateApiCallback } from "../../utils/validateApiCallback";
 import { useTranslation } from "../../contexts/TranslationProvider";
 import "./Toolbar.scss";
+import { useSearch } from "../../contexts/SearchContext";
 
-const Toolbar = ({ onLayoutChange, onRefresh, triggerAction, permissions }) => {
+const Toolbar = ({ onLayoutChange, onRefresh, defaultKeyword, onSearch, triggerAction, permissions }) => {
+  const [keyword, setKeyword] = useState(defaultKeyword);
   const [showToggleViewMenu, setShowToggleViewMenu] = useState(false);
   const { currentFolder } = useFileNavigation();
   const { selectedFiles, setSelectedFiles, handleDownload } = useSelection();
   const { clipBoard, setClipBoard, handleCutCopy, handlePasting } = useClipBoard();
+  const searchInputRef = useSearch();
   const { activeLayout } = useLayout();
   const t = useTranslation();
+
+  useEffect(() => setKeyword(defaultKeyword), [defaultKeyword]);
 
   // Toolbar Items
   const toolbarLeftItems = [
@@ -50,9 +55,14 @@ const Toolbar = ({ onLayoutChange, onRefresh, triggerAction, permissions }) => {
 
   const toolbarRightItems = [
     {
+      icon: <BsSearch size={16} />,
+      title: t("search"),
+      onClick: () => onSearch(keyword),
+    },
+    {
       icon: activeLayout === "grid" ? <BsGridFill size={16} /> : <FaListUl size={16} />,
       title: t("changeView"),
-      onClick: () => setShowToggleViewMenu((prev) => !prev),
+      onMouseDown: () => setShowToggleViewMenu(!showToggleViewMenu),
     },
     {
       icon: <FiRefreshCw size={16} />,
@@ -132,8 +142,7 @@ const Toolbar = ({ onLayoutChange, onRefresh, triggerAction, permissions }) => {
             onClick={() => setSelectedFiles([])}
           >
             <span>
-              {selectedFiles.length}{" "}
-              {t(selectedFiles.length > 1 ? "itemsSelected" : "itemSelected")}
+              {t(selectedFiles.length > 1 ? "itemsSelected" : "itemSelected", { count: selectedFiles.length })}
             </span>
             <MdClear size={18} />
           </button>
@@ -141,7 +150,6 @@ const Toolbar = ({ onLayoutChange, onRefresh, triggerAction, permissions }) => {
       </div>
     );
   }
-  //
 
   return (
     <div className="toolbar">
@@ -157,9 +165,20 @@ const Toolbar = ({ onLayoutChange, onRefresh, triggerAction, permissions }) => {
             ))}
         </div>
         <div>
+          <input
+            type="search"
+            ref={searchInputRef}
+            value={keyword}
+            style={{ fontSize: "20px", padding: "5px" }}
+            onChange={e => setKeyword(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter")
+                onSearch(e.target.value);
+            }}
+          />
           {toolbarRightItems.map((item, index) => (
             <div key={index} className="toolbar-left-items">
-              <button className="item-action icon-only" title={item.title} onClick={item.onClick}>
+              <button className="item-action icon-only" title={item.title} onClick={item.onClick} onMouseDown={item.onMouseDown}>
                 {item.icon}
               </button>
               {index !== toolbarRightItems.length - 1 && <div className="item-separator"></div>}

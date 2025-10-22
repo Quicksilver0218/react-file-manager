@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "../../../components/Button/Button";
 import { IoWarningOutline } from "react-icons/io5";
 import { useDetectOutsideClick } from "../../../hooks/useDetectOutsideClick";
@@ -91,7 +91,7 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
       return;
     } else if (currentPathFiles.some((file) => file.name === renameFile)) {
       setFileRenameError(true);
-      setRenameErrorMessage(t("folderExists", { renameFile }));
+      setRenameErrorMessage(t("fileExists", { renameFile }));
       outsideClick.setIsClicked(false);
       return;
     } else if (!file.isDirectory && !isConfirmed) {
@@ -153,6 +153,19 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
     focusName();
   }, [outsideClick.isClicked]);
 
+  const onCancel = useCallback(() => {
+    setCurrentPathFiles((prev) =>
+      prev.map((f) => {
+        if (f.key === file.key) {
+          f.isEditing = false;
+        }
+        return f;
+      })
+    );
+    setRenameFileWarning(false);
+    triggerAction.close();
+  }, [file, triggerAction]);
+
   return (
     <>
       <NameInput
@@ -182,6 +195,7 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
         setShow={setRenameFileWarning}
         dialogWidth={"25vw"}
         closeButton={false}
+        onClose={onCancel}
       >
         <div className="fm-rename-folder-container" ref={warningModalRef}>
           <div className="fm-rename-folder-input">
@@ -193,18 +207,7 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
           <div className="fm-rename-folder-action">
             <Button
               type="secondary"
-              onClick={() => {
-                setCurrentPathFiles((prev) =>
-                  prev.map((f) => {
-                    if (f.key === file.key) {
-                      f.isEditing = false;
-                    }
-                    return f;
-                  })
-                );
-                setRenameFileWarning(false);
-                triggerAction.close();
-              }}
+              onClick={onCancel}
             >
               {t("no")}
             </Button>

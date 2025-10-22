@@ -1,0 +1,113 @@
+import { CSSProperties, ReactNode } from "react";
+
+export type File = {
+  name: string;
+  isDirectory: boolean;
+  path: string;
+  updatedAt?: string; // Optional: Last update timestamp in ISO 8601 format
+  size?: number; // Optional: File size in bytes (only applicable for files)
+};
+
+export type Dictonary = {
+  newFolder: string;
+  upload: string;
+  paste: string;
+  changeView: string;
+  refresh: string;
+  cut: string;
+  copy: string;
+  rename: string;
+  download: string;
+  delete: string;
+  itemSelected: string;
+  itemsSelected: string;
+  cancel: string;
+  clearSelection: string;
+  completed: string;
+  fileNameChangeWarning: string;
+  no: string;
+  yes: string;
+  close: string;
+  fileTypeNotAllowed: string;
+  fileAlreadyExist: string;
+  maxUploadSize: string;
+  dragFileToUpload: string;
+  uploadFail: string;
+  uploading: string;
+  uploaded: string;
+  remove: string;
+  abortUpload: string;
+  preview: string;
+  previewUnavailable: string;
+  home: string;
+  showMoreFolder: string;
+  moveTo: string;
+  folderEmpty: string;
+  selectAll: string;
+  search: string;
+  view: string;
+  grid: string;
+  list: string;
+  open: string;
+  nothingHereYet: string;
+  name: string;
+  modified: string;
+  size: string;
+  deleteItemConfirm: string;
+  deleteItemsConfirm: string;
+  percentDone: string;
+  canceled: string;
+  invalidFileName: string;
+  folderExists: string;
+  fileExists: string;
+  collapseNavigationPane: string;
+  expandNavigationPane: string;
+  copyFiles: string;
+  moveFiles: string;
+  pasteConflict: string;
+  pasteConflicts: string;
+  conflictingFiles: string;
+  replace: string;
+  skip: string;
+}
+
+export default function FileManager(props: {
+  acceptedFileTypes?: string;
+  className?: string;
+  collapsibleNav?: boolean;
+  defaultNavExpanded?: boolean;
+  enableFilePreview?: boolean;
+  filePreviewPath?: string;
+  filePreviewComponent?: (file: File) => ReactNode;
+  fileUploadConfig?: { url: string; method?: "POST" | "PUT"; inputName?: string; headers?: { [key: string]: string } };
+  files: File[];
+  fontFamily?: string;
+  height?: string | number;
+  initialPath?: string;
+  isLoading?: boolean;
+  dictionary?: Dictonary;
+  layout?: "grid" | "list";
+  maxFileSize?: number;
+  onCopy?: (files: File[]) => void;
+  onCut?: (files: File[]) => void;
+  onCreateFolder?: (name: string, parentFolder?: File) => void;
+  onDelete?: (files: File[]) => void;
+  onDownload?: (files: File[]) => void;
+  onError?: (error: { type: string; message: string }, file: File) => void;
+  onFileOpen?: (file: File) => void;
+  onFolderChange?: (path: string) => void;
+  onFileUploaded?: (response: { [key: string]: unknown }) => void;
+  onFileUploading?: (file: File, parentFolder?: File) => { [key: string]: string };
+  onLayoutChange?: (layout: "grid" | "list") => void;
+  onPaste?: (files: File[], destinationFolder: File | null, operationType: "copy" | "move", mode?: "replace" | "skip") => void
+  onRefresh?: () => void;
+  keyword?: string;
+  onSearch?: (keyword: string) => void;
+  onRename?: (file: File, newName: string) => void;
+  onSelectionChange?: (files: File[]) => void;
+  onSortChange?: (sortConfig: { key: "name" | "modified" | "size", direction: "asc" | "desc" }) => void;
+  permissions?: { create?: boolean; upload?: boolean; move?: boolean; copy?: boolean; rename?: boolean; download?: boolean; delete?: boolean; };
+  primaryColor?: string;
+  style?: CSSProperties;
+  width?: string | number;
+}): JSX.Element;

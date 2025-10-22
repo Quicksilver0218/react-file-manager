@@ -18,6 +18,12 @@ import { useMemo, useState } from "react";
 import { defaultPermissions } from "../constants";
 import { formatDate as defaultFormatDate } from "../utils/formatDate";
 import "./FileManager.scss";
+import { SearchProvider } from "../contexts/SearchContext";
+
+let dict = {};
+try {
+  dict = (await import("../locales/en-US")).default;
+} catch {}
 
 const FileManager = ({
   files,
@@ -34,6 +40,8 @@ const FileManager = ({
   onDelete = () => null,
   onLayoutChange = () => {},
   onRefresh,
+  keyword = "",
+  onSearch = () => {},
   onFileOpen = () => {},
   onFolderChange = () => {},
   onSelect,
@@ -49,8 +57,8 @@ const FileManager = ({
   initialPath = "",
   filePreviewComponent,
   primaryColor = "#6155b4",
-  fontFamily = "Nunito Sans, sans-serif",
-  language = "en-US",
+  fontFamily = "inherit",
+  dictionary = dict,
   permissions: userPermissions = {},
   collapsibleNav = false,
   defaultNavExpanded = true,
@@ -74,6 +82,9 @@ const FileManager = ({
     [userPermissions]
   );
 
+  const [pasteState, setPasteState] = useState();
+  const [conflictingFiles, setConflictingFiles] = useState([]);
+
   return (
     <main
       className={`file-explorer ${className}`}
@@ -81,7 +92,7 @@ const FileManager = ({
       style={{ ...customStyles, ...style }}
     >
       <Loader loading={isLoading} />
-      <TranslationProvider language={language}>
+      <TranslationProvider dict={dictionary}>
         <FilesProvider filesData={files} onError={onError}>
           <FileNavigationProvider initialPath={initialPath} onFolderChange={onFolderChange}>
             <SelectionProvider
@@ -89,68 +100,75 @@ const FileManager = ({
               onSelect={onSelect}
               onSelectionChange={onSelectionChange}
             >
-              <ClipBoardProvider onPaste={onPaste} onCut={onCut} onCopy={onCopy}>
+              <ClipBoardProvider onPaste={onPaste} onCut={onCut} onCopy={onCopy} setPasteState={setPasteState} setConflictingFiles={setConflictingFiles}>
                 <LayoutProvider layout={layout}>
-                  <Toolbar
-                    onLayoutChange={onLayoutChange}
-                    onRefresh={onRefresh}
-                    triggerAction={triggerAction}
-                    permissions={permissions}
-                  />
-                  <section
-                    ref={containerRef}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    className="files-container"
-                  >
-                    <div
-                      className={`navigation-pane ${isNavigationPaneOpen ? "open" : "closed"}`}
-                      style={{
-                        width: colSizes.col1 + "%",
-                      }}
+                  <SearchProvider>
+                    <Toolbar
+                      onLayoutChange={onLayoutChange}
+                      onRefresh={onRefresh}
+                      defaultKeyword={keyword}
+                      onSearch={onSearch}
+                      triggerAction={triggerAction}
+                      permissions={permissions}
+                    />
+                    <section
+                      ref={containerRef}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUp}
+                      className="files-container"
                     >
-                      <NavigationPane onFileOpen={onFileOpen} />
                       <div
-                        className={`sidebar-resize ${isDragging ? "sidebar-dragging" : ""}`}
-                        onMouseDown={handleMouseDown}
-                      />
-                    </div>
+                        className={`navigation-pane ${isNavigationPaneOpen ? "open" : "closed"}`}
+                        style={{
+                          width: colSizes.col1 + "%",
+                        }}
+                      >
+                        <NavigationPane onFileOpen={onFileOpen} />
+                        <div
+                          className={`sidebar-resize ${isDragging ? "sidebar-dragging" : ""}`}
+                          onMouseDown={handleMouseDown}
+                        />
+                      </div>
 
-                    <div
-                      className="folders-preview"
-                      style={{ width: (isNavigationPaneOpen ? colSizes.col2 : 100) + "%" }}
-                    >
-                      <BreadCrumb
-                        collapsibleNav={collapsibleNav}
-                        isNavigationPaneOpen={isNavigationPaneOpen}
-                        setNavigationPaneOpen={setNavigationPaneOpen}
-                      />
-                      <FileList
-                        onCreateFolder={onCreateFolder}
-                        onRename={onRename}
-                        onFileOpen={onFileOpen}
-                        onRefresh={onRefresh}
-                        enableFilePreview={enableFilePreview}
-                        triggerAction={triggerAction}
-                        permissions={permissions}
-                        formatDate={formatDate}
-                      />
-                    </div>
-                  </section>
+                      <div
+                        className="folders-preview"
+                        style={{ width: (isNavigationPaneOpen ? colSizes.col2 : 100) + "%" }}
+                      >
+                        <BreadCrumb
+                          collapsibleNav={collapsibleNav}
+                          isNavigationPaneOpen={isNavigationPaneOpen}
+                          setNavigationPaneOpen={setNavigationPaneOpen}
+                        />
+                        <FileList
+                          onCreateFolder={onCreateFolder}
+                          onRename={onRename}
+                          onFileOpen={onFileOpen}
+                          onRefresh={onRefresh}
+                          enableFilePreview={enableFilePreview}
+                          triggerAction={triggerAction}
+                          permissions={permissions}
+                          formatDate={formatDate}
+                        />
+                      </div>
+                    </section>
 
-                  <Actions
-                    fileUploadConfig={fileUploadConfig}
-                    onFileUploading={onFileUploading}
-                    onFileUploaded={onFileUploaded}
-                    onDelete={onDelete}
-                    onRefresh={onRefresh}
-                    maxFileSize={maxFileSize}
-                    filePreviewPath={filePreviewPath}
-                    filePreviewComponent={filePreviewComponent}
-                    acceptedFileTypes={acceptedFileTypes}
-                    triggerAction={triggerAction}
-                    permissions={permissions}
-                  />
+                    <Actions
+                      fileUploadConfig={fileUploadConfig}
+                      onFileUploading={onFileUploading}
+                      onFileUploaded={onFileUploaded}
+                      onDelete={onDelete}
+                      onPaste={onPaste}
+                      onRefresh={onRefresh}
+                      maxFileSize={maxFileSize}
+                      filePreviewPath={filePreviewPath}
+                      filePreviewComponent={filePreviewComponent}
+                      acceptedFileTypes={acceptedFileTypes}
+                      triggerAction={triggerAction}
+                      permissions={permissions}
+                      pasteState={pasteState}
+                      conflictingFiles={conflictingFiles}
+                    />
+                  </SearchProvider>
                 </LayoutProvider>
               </ClipBoardProvider>
             </SelectionProvider>
@@ -177,6 +195,7 @@ FileManager.propTypes = {
     url: urlValidator,
     headers: PropTypes.objectOf(PropTypes.string),
     method: PropTypes.oneOf(["POST", "PUT"]),
+    inputName: PropTypes.string,
   }),
   isLoading: PropTypes.bool,
   onCreateFolder: PropTypes.func,
@@ -190,6 +209,8 @@ FileManager.propTypes = {
   onDownload: PropTypes.func,
   onLayoutChange: PropTypes.func,
   onRefresh: PropTypes.func,
+  keyword: PropTypes.string,
+  onSearch: PropTypes.func,
   onFileOpen: PropTypes.func,
   onFolderChange: PropTypes.func,
   onSelect: PropTypes.func,
@@ -206,7 +227,7 @@ FileManager.propTypes = {
   filePreviewComponent: PropTypes.func,
   primaryColor: PropTypes.string,
   fontFamily: PropTypes.string,
-  language: PropTypes.string,
+  dictionary: PropTypes.objectOf(PropTypes.string),
   permissions: PropTypes.shape({
     create: PropTypes.bool,
     upload: PropTypes.bool,

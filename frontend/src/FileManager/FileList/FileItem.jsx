@@ -204,7 +204,7 @@ const FileItem = ({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="file-item">
+      <div className="column file-item">
         {!file.isEditing && (
           <Checkbox
             name={file.name}
@@ -248,8 +248,8 @@ const FileItem = ({
 
       {activeLayout === "list" && (
         <>
-          <div className="modified-date">{formatDate(file.updatedAt)}</div>
-          <div className="size">{file?.size > 0 ? getDataSize(file?.size) : ""}</div>
+          <div className="column modified-date">{formatDate(file.updatedAt)}</div>
+          <div className="column size">{file?.size > 0 ? getDataSize(file?.size) : ""}</div>
         </>
       )}
 

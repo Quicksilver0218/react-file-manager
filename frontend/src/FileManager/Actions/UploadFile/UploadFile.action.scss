@@ -10,15 +10,14 @@
         width: 100%;
 
         .draggable-file-input {
-            color: #696969;
-            background-color: #f7f7f7;
-            margin-bottom: 18px;
-            height: 220px;
+            height: 100%;
+            min-height: 240px;
             border: 2px dashed #ccc;
             border-radius: 5px;
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
 
             .input-text {
                 pointer-events: none; // This ensures that the drag and drop event isn't binded with it's children
@@ -35,24 +34,6 @@
         .draggable-file-input.dragging {
             border-color: var(--file-manager-primary-color);
         }
-
-        .btn-choose-file {
-            display: flex;
-            justify-content: center;
-
-            label {
-                display: inline-block;
-                padding: 0.4rem 0.8rem;
-
-                &:hover {
-                    cursor: pointer;
-                }
-            }
-
-            .choose-file-input {
-                display: none;
-            }
-        }
     }
 
     .files-progress {
@@ -60,12 +41,13 @@
 
         .heading {
             display: flex;
+            align-items: center;
             gap: 4px;
+            text-wrap: nowrap;
         }
 
         h2 {
             font-size: 0.9em;
-            margin: 0;
         }
 
         ul {
@@ -73,7 +55,6 @@
             padding-right: 5px;
             padding-bottom: 10px;
             margin-top: 0.7rem;
-            height: 220px;
             @include overflow-y-scroll;
             font-weight: 500;
 
@@ -84,10 +65,6 @@
                 gap: 10px;
                 margin-bottom: 18px;
                 padding-bottom: 12px;
-
-                .file-icon {
-                    width: 10%;
-                }
 
                 .file {
                     width: 86%;

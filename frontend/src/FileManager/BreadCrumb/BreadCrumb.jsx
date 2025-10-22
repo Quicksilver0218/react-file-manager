@@ -25,13 +25,18 @@ const BreadCrumb = ({ collapsibleNav, isNavigationPaneOpen, setNavigationPaneOpe
 
   useEffect(() => {
     setFolders(() => {
-      let path = "";
-      return currentPath?.split("/").map((item) => {
-        return {
-          name: item || t("home"),
-          path: item === "" ? item : (path += `/${item}`),
-        };
-      });
+      const folders = [{
+        name: t("home"),
+        path: "",
+      }];
+      if (currentPath) {
+        const items = currentPath.split("/");
+        folders.push(...items?.map((item, i) => ({
+          name: item,
+          path: items.slice(0, i + 1).join("/"),
+        })));
+      }
+      return folders;
     });
     setHiddenFolders([]);
     setHiddenFoldersWidth([]);
@@ -112,7 +117,7 @@ const BreadCrumb = ({ collapsibleNav, isNavigationPaneOpen, setNavigationPaneOpe
           </>
         )}
         {folders.map((folder, index) => (
-          <div key={index} style={{ display: "contents" }}>
+          <div key={index}>
             <span
               className="folder-name"
               onClick={() => switchPath(folder.path)}

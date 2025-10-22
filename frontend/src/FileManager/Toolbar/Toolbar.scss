@@ -5,9 +5,10 @@
   min-height: 35px;
   max-height: 35px;
   border-bottom: 1px solid $border-color;
-  padding: 5px 10px;
+  padding: 0 10px;
 
   .file-action-container {
+    height: 100%;
     display: flex;
     justify-content: space-between;
 
@@ -21,9 +22,7 @@
 
       &:hover:not(:disabled) {
         cursor: pointer;
-        background-color: rgb(0, 0, 0, 0.55) !important;
         border-radius: 3px;
-        color: white;
         text-shadow: 0px 0px 1px white;
       }
 
@@ -37,6 +36,7 @@
   }
 
   .fm-toolbar {
+    height: 100%;
     display: flex;
     justify-content: space-between;
 
@@ -54,8 +54,7 @@
       z-index: 3;
       top: 105%;
       right: 22%;
-      background-color: white;
-      margin: 0;
+      background-color: var(--background);
       border: 1px solid #c4c4c4;
       border-radius: 5px;
       font-size: $fm-font-size;
@@ -71,16 +70,21 @@
         li {
           display: flex;
           align-items: center;
+          justify-content: end;
           gap: 8px;
-          padding: 5px 20px 5px 10px;
+          padding: 5px 10px;
 
           &:hover {
             cursor: pointer;
-            background-color: rgba(0, 0, 0, 0.075);
+            background-color: var(--file-manager-primary-color);
           }
 
-          span:nth-child(1) {
-            width: 13px;
+          span {
+            text-wrap: nowrap;
+
+            :nth-child(1) {
+              width: 13px;
+            }
           }
         }
       }
@@ -88,19 +92,19 @@
   }
 
   .item-action {
-    background-color: white;
+    background-color: transparent;
     display: flex;
     align-items: center;
     gap: 7px;
-    padding: 8px 12px;
+    padding: 5px 12px;
     font-size: 14px;
     width: fit-content;
     border: none;
+    border-radius: 3px;
 
     &:hover {
+      background-color: var(--file-manager-primary-color);
       cursor: pointer;
-      background-color: rgb(0 0 0 / 12%) !important;
-      border-radius: 3px;
     }
 
     .toggle-view-icon {
@@ -114,20 +118,10 @@
   }
 
   .icon-only {
-    padding: 0 8px !important;
-
-    &:focus {
-      background-color: rgb(0 0 0 / 12%);
-      border-radius: 3px;
-    }
-
-    &:hover {
-      color: var(--file-manager-primary-color);
-    }
+    padding: 0 8px;
   }
 
   .item-separator {
-    height: 36px;
     background: $border-color;
     width: 1px;
     margin: 0 5px;

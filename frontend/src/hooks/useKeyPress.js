@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 const normalizeKey = (key) => {
   return key.toLowerCase();
@@ -10,7 +10,7 @@ export const useKeyPress = (keys, callback, disable = false) => {
     return new Set(keys.map((key) => normalizeKey(key)));
   }, [keys]);
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback(e => {
     if (e.repeat) return; // To prevent this function from triggering on key hold e.g. Ctrl hold
 
     lastKeyPressed.current.add(normalizeKey(e.key));
@@ -20,15 +20,15 @@ export const useKeyPress = (keys, callback, disable = false) => {
       callback(e);
       return;
     }
-  };
+  }, [keysSet, callback, disable]);
 
-  const handleKeyUp = (e) => {
+  const handleKeyUp = useCallback(e => {
     lastKeyPressed.current.delete(normalizeKey(e.key));
-  };
+  }, []);
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     lastKeyPressed.current.clear();
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -40,5 +40,5 @@ export const useKeyPress = (keys, callback, disable = false) => {
       window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleBlur);
     };
-  }, [keysSet, callback, disable]);
+  }, [handleKeyDown, handleKeyUp, handleBlur]);
 };

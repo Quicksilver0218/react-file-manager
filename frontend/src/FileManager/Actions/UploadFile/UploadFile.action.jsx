@@ -109,26 +109,22 @@ const UploadFileAction = ({
           onDragOver={(e) => e.preventDefault()}
           onDragEnter={() => setIsDragging(true)}
           onDragLeave={() => setIsDragging(false)}
+          onClick={() => fileInputRef.current.click()}
         >
           <div className="input-text">
             <AiOutlineCloudUpload size={30} />
             <span>{t("dragFileToUpload")}</span>
           </div>
         </div>
-        <div className="btn-choose-file">
-          <Button padding="0" onKeyDown={handleChooseFileKeyDown}>
-            <label htmlFor="chooseFile">{t("chooseFile")}</label>
-            <input
-              ref={fileInputRef}
-              type="file"
-              id="chooseFile"
-              className="choose-file-input"
-              onChange={handleChooseFile}
-              multiple
-              accept={acceptedFileTypes}
-            />
-          </Button>
-        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="choose-file-input"
+          onChange={handleChooseFile}
+          multiple
+          accept={acceptedFileTypes}
+          style={{ display: "none" }}
+        />
       </div>
       {files.length > 0 && (
         <div className="files-progress">

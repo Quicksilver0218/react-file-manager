@@ -5,22 +5,10 @@
   font-size: $fm-font-size;
 
   .breadcrumb {
-    height: 22px;
-    min-height: 22px;
-    max-height: 22px;
     display: flex;
     gap: 0.5rem;
     border-bottom: 1px solid $border-color;
-    padding: 6px 0 6PX 15px;
-    overflow-x: hidden;
-
-    &::-webkit-scrollbar {
-      height: 3px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: var(--file-manager-primary-color) !important;
-    }
+    padding-left: 15px;
 
     .nav-toggler {
       display: flex;
@@ -38,10 +26,12 @@
       gap: 0.25rem;
       font-weight: 500;
       min-width: fit-content;
+      padding: 2px 4px;
+      border-radius: 3px;
 
       &:hover {
         cursor: pointer;
-        color: var(--file-manager-primary-color);
+        background-color: var(--file-manager-primary-color);
       }
     }
 
@@ -68,7 +58,6 @@
 
 .hidden-folders-container {
   position: absolute;
-  margin: 0;
   z-index: 2;
   background-color: rgb(99, 99, 99);
   color: white;

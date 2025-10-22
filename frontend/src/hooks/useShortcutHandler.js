@@ -2,30 +2,37 @@ import { useKeyPress } from "./useKeyPress";
 import { shortcuts } from "../utils/shortcuts";
 import { useClipBoard } from "../contexts/ClipboardContext";
 import { useFileNavigation } from "../contexts/FileNavigationContext";
+import { useSearch } from "../contexts/SearchContext";
 import { useSelection } from "../contexts/SelectionContext";
 import { useLayout } from "../contexts/LayoutContext";
 import { validateApiCallback } from "../utils/validateApiCallback";
+import { useCallback } from "react";
 
 export const useShortcutHandler = (triggerAction, onRefresh, permissions) => {
   const { setClipBoard, handleCutCopy, handlePasting } = useClipBoard();
   const { currentFolder, currentPathFiles } = useFileNavigation();
   const { selectedFiles, setSelectedFiles, handleDownload } = useSelection();
+  const searchInputRef = useSearch();
   const { setActiveLayout } = useLayout();
 
   const triggerCreateFolder = () => {
-    permissions.create && triggerAction.show("createFolder");
+    if (permissions.create)
+      triggerAction.show("createFolder");
   };
 
   const triggerUploadFiles = () => {
-    permissions.upload && triggerAction.show("uploadFile");
+    if (permissions.upload)
+      triggerAction.show("uploadFile");
   };
 
   const triggerCutItems = () => {
-    permissions.move && handleCutCopy(true);
+    if (permissions.move)
+      handleCutCopy(true);
   };
 
   const triggerCopyItems = () => {
-    permissions.copy && handleCutCopy(false);
+    if (permissions.copy)
+      handleCutCopy(false);
   };
 
   const triggerPasteItems = () => {
@@ -33,11 +40,13 @@ export const useShortcutHandler = (triggerAction, onRefresh, permissions) => {
   };
 
   const triggerRename = () => {
-    permissions.rename && triggerAction.show("rename");
+    if (permissions.rename)
+      triggerAction.show("rename");
   };
 
   const triggerDownload = () => {
-    permissions.download && handleDownload();
+    if (permissions.download)
+      handleDownload();
   };
 
   const triggerDelete = () => {
@@ -71,6 +80,13 @@ export const useShortcutHandler = (triggerAction, onRefresh, permissions) => {
     setClipBoard(null);
   };
 
+  const triggerSearch = useCallback(() => {
+    if (!searchInputRef.current)
+      return;
+    searchInputRef.current.focus();
+    searchInputRef.current.select();
+  }, [searchInputRef]);
+
   const triggerGridLayout = () => {
     setActiveLayout("grid");
   };
@@ -92,6 +108,7 @@ export const useShortcutHandler = (triggerAction, onRefresh, permissions) => {
   useKeyPress(shortcuts.selectAll, triggerSelectAll, triggerAction.isActive);
   useKeyPress(shortcuts.clearSelection, triggerClearSelection, triggerAction.isActive);
   useKeyPress(shortcuts.refresh, triggerRefresh, triggerAction.isActive);
+  useKeyPress(shortcuts.search, triggerSearch, triggerAction.isActive);
   useKeyPress(shortcuts.gridLayout, triggerGridLayout, triggerAction.isActive);
   useKeyPress(shortcuts.listLayout, triggerListLayout, triggerAction.isActive);
 };

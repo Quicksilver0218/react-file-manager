@@ -1,7 +1,7 @@
-export const validateApiCallback = (callback, callbackName, ...args) => {
+export async function validateApiCallback(callback, callbackName, ...args) {
   try {
     if (typeof callback === "function") {
-      callback(...args);
+      return await callback(...args);
     } else {
       throw new Error(
         `<FileManager /> Missing prop: Callback function "${callbackName}" is required.`
